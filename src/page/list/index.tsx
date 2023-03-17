@@ -1,41 +1,37 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
-
+import { useCallback, useEffect } from "react";
 import { ProductItem } from "store/type";
-
 import { ProductContainer } from "./style";
 import Item from "./item";
 import Header from "components/header";
 import Nav from "components/nav";
-import { getProducts } from "api/product";
+import { useProductsContext } from "store/context/ProductsContext";
 
-const ProductListPage = () => {
-  const [products, setProducts] = useState<ProductItem[]>([]);
+const ProductListPageContent = () => {
+  const { products, fetchProducts } = useProductsContext();
 
-  const fetchProduct = useCallback(async () => {
-    const data = await getProducts();
-    return data;
-  }, []);
-
-  const memoizedProduct = useMemo(async () => {
-    const data = await fetchProduct();
-    return data;
-  }, [fetchProduct]);
+  const handleFetchProducts = useCallback(() => {
+    fetchProducts();
+  }, [fetchProducts]);
 
   useEffect(() => {
-    memoizedProduct.then((res) => {
-      setProducts(res);
-    });
-  }, [memoizedProduct]);
+    handleFetchProducts();
+  }, [handleFetchProducts]);
 
+  return (
+    <ProductContainer>
+      {products.map((item: ProductItem) => {
+        return <Item key={item.id} item={item} />;
+      })}
+    </ProductContainer>
+  );
+};
+
+const ProductListPage = () => {
   return (
     <>
       <Header />
       <Nav />
-      <ProductContainer>
-        {products.map((item: ProductItem) => {
-          return <Item key={item.id} item={item} />;
-        })}
-      </ProductContainer>
+      <ProductListPageContent />
     </>
   );
 };

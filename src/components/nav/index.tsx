@@ -7,11 +7,17 @@ import {
   NavTitleBox,
 } from "./style";
 
+import cartPng from "assets/png/white_cart.png"
+import { useRouter } from "hooks/useRouter";
+import { ROUTE } from "router";
+
 const Nav = () => {
+
+  const { go } = useRouter();
   return (
     <NavBox>
-      <NavTitleBox>
-        <Icon src="assets/svgs/cart.svg" size={'big'} alt="장바구니"/>
+      <NavTitleBox onClick={() => go(ROUTE.PRODUCT_LIST)}>
+        <Icon src={cartPng} size={'big'} alt="장바구니"/>
         <NavTitle>NEXTSTEP</NavTitle>
       </NavTitleBox>
       <NavButtonBox>
