@@ -1,5 +1,4 @@
 import React from "react";
-import { OrderDetail } from "types/type";
 
 const DEFAULT_QUANTITY = 1;
 
@@ -12,7 +11,7 @@ const OrderLeftSection = ({ orderList }: OrderLeftSectionProps) => {
 
   const orderQuantity = (item: OrderDetail) => {
     return item?.quantity ? item.quantity : DEFAULT_QUANTITY;
-  };
+  }
 
   return (
     <section className="order-left-section">
