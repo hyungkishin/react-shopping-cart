@@ -1,22 +1,20 @@
 import { handleModal } from "common/modal";
 import { printWon } from "common/util";
-import { cartsState, useCart } from "hooks/cart";
 import { useOrder } from "hooks/order";
 import { useRouter } from "hooks/useRouter";
-import { useRecoilValue } from "recoil";
 import { ROUTE } from "router";
 
-const RightSection = () => {
-  const carts = useRecoilValue(cartsState);
-
+type RightSectionProps = {
+  carts: UserCart[];
+  deleteCartItems: (items: UserCart[]) => void;
+};
+const RightSection = ({ carts, deleteCartItems }: RightSectionProps) => {
   const { go } = useRouter();
-
-  const { deleteCartItems } = useCart();
 
   const { mutate } = useOrder();
 
   const orderCounter = carts.filter((v) => v.checked).length;
-  
+
   const orderText = () => {
     return orderCounter ? `주문하기 (${orderCounter})` : "주문하기";
   };

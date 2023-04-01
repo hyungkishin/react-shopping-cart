@@ -1,31 +1,26 @@
-import { useMutation, useQuery } from 'react-query';
-import { atom, useSetRecoilState } from 'recoil';
-import { addCart, deleteCart, getCarts } from 'services/cart';
+import { deleteCart } from 'services/cart';
 import { MAX_QUANTITY, MIN_QUANTITY } from 'constant';
+import { useState } from 'react';
 
-const CART = 'cart'
+type UserCartType = {
+  userCartsState: UserCart[];
+  setUserCartsState: (items: UserCart[]) => void;
+  selectCart: (item: UserCart) => void;
+  setAllChecked: (checked: boolean, items: UserCart[]) => void;
+  deleteCartItem: (itemId: number) => void;
+  deleteCartItems: (items: UserCart[]) => void;
+  increaseCartItemQuantity: (itemId: number) => void;
+  decreaseCartItemQuantity: (itemId: number) => void;
+};
 
-export const cartsState = atom<UserCart[]>({
-  key: 'selectCartsState',
-  default: [] as UserCart[]
-});
-
-export function useCart() {
-
-  const setUserCartsState = useSetRecoilState(cartsState)
-
+export function useCart(): UserCartType {
+  const [userCartsState, setUserCartsState] = useState<UserCart[]>([]);
   const selectCart = (item: UserCart) => {
     setUserCartsState((prevState) =>
-      prevState.map((cart: UserCart) => {
-        return cart.id === item.id
-          ? { ...cart, checked: !cart.checked }
-          : cart;
+      prevState.map((cart) => {
+        return cart.id === item.id ? { ...cart, checked: !cart.checked } : cart;
       })
     );
-  }
-
-  const setCarts = (items: UserCart[]) => {
-    setUserCartsState(items);
   }
 
   const setAllChecked = (checked: boolean, items: UserCart[]) => {
@@ -66,20 +61,6 @@ export function useCart() {
     );
   }
 
-  return { selectCart, setAllChecked, setCarts, deleteCartItem, deleteCartItems, increaseCartItemQuantity, decreaseCartItemQuantity };
+  return { userCartsState, setUserCartsState, selectCart, setAllChecked, deleteCartItem, deleteCartItems, increaseCartItemQuantity, decreaseCartItemQuantity };
 }
 
-export function useCartList() {
-  return useQuery(CART, getCarts);
-}
-
-export function useAddCart() {
-  return useMutation((item: Product) => addCart(item), {
-    onSuccess: (newCartItem) => {
-      console.log("success", newCartItem)
-    },
-    onError: (error: Error) => {
-      throw new Error(`Failed to add cart item: ${error.message}`);
-    },
-  });
-}
